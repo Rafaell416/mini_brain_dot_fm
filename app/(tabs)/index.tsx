@@ -1,14 +1,42 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
-import EditScreenInfo from '../../components/EditScreenInfo';
-import { Text, View } from '../../components/Themed';
+import { Text, View } from '../../src/components/Themed';
+import useMentalStates from '../../src/modules/mental_states/hooks/useMentalStates';
+import { State } from '../../src/modules/mental_states/types';
+import { useRouter } from "expo-router";
 
-export default function TabOneScreen() {
+
+const Card: React.FC<{ title: string, icon: string }> = ({ title, icon }) => {
+  const router = useRouter();
+  
+  const _handlePressCard = () => {
+    router.push('/modal');
+  }
+
+  return (
+    <TouchableOpacity activeOpacity={0.5} onPress={_handlePressCard}>
+      <View style={styles.card}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.icon}>{icon}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
+export default function MentalStates() {
+  const states = useMentalStates()
+
+  const renderItem: React.FC<{ item: State }> = ({ item }) => (
+    <Card title={item.title} icon={item.icon}/>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+       <FlatList
+        data={states}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 }
@@ -16,16 +44,34 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 40
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  card: {
+    backgroundColor: '#C53C86',
+    height: 100,
+    padding: 16,
+    marginBottom: 30,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.30,
+    shadowRadius: 4.65,
+    elevation: 8,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
   },
+  icon: {
+    fontSize: 52,
+    position: 'absolute',
+    top: 10,
+    right: 10
+  }
 });
