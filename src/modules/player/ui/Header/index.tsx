@@ -5,6 +5,8 @@ import { useColorScheme, Pressable } from 'react-native';
 import { Link } from 'expo-router';
 import Colors from '../../../../constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useMentalStatesActions } from '../../../mental_states/hooks/useMentalStates';
+import { useTracksActions } from '../../hooks/useTracks';
 
 interface HeaderProps {
   title: string;
@@ -12,6 +14,13 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
   const colorScheme = useColorScheme();
+  const { clearMentalState } = useMentalStatesActions();
+  const { clearTracks } = useTracksActions();
+
+  const clear = () => {
+    clearMentalState();
+    clearTracks();
+  };
   
   return (
     <View style={styles.container}>
@@ -24,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
         {title}
       </Text>
       <Link href="/" asChild>
-        <Pressable hitSlop={5}>
+        <Pressable hitSlop={5} onPress={clear}>
           {({ pressed }) => (
             <FontAwesome
               name="chevron-down"

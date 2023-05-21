@@ -10,12 +10,14 @@ export interface TracksState {
   status: RequestStatus;
   error: unknown | null;
   tracks: Track[];
+  currentTrack: null | Track;
 };
 
 const initialState: TracksState = {
   status: 'idle',
   error: null,
-  tracks: []
+  tracks: [],
+  currentTrack: null
 };
 
 export const fetchTracks = createAsyncThunk('tracks/fetchTracks', async (category: string, { rejectWithValue }) => {
@@ -32,7 +34,18 @@ export const fetchTracks = createAsyncThunk('tracks/fetchTracks', async (categor
 export const tracksSlice = createSlice({
   name: SLICE_NAME,
   initialState,
-  reducers: {},
+  reducers: {
+    resetStore: () => ({ ...initialState }),
+    getRandomTrack: (state) => {
+      const tracks = state.tracks;
+      const randomIndex = Math.floor(Math.random() * tracks.length);
+      const randomTrack = tracks[randomIndex];
+      return {
+        ...state,
+        currentTrack: randomTrack
+      }
+    }
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchTracks.pending, (state, _) => {

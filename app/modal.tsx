@@ -1,28 +1,65 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-
 import { Text, View } from '../src/components/Themed';
 import Header from '../src/modules/player/ui/Header';
 import { useMentalStatesState } from '../src/modules/mental_states/hooks/useMentalStates';
 import Colors from '../src/constants/Colors';
-
 import useTracks from '../src/modules/player/hooks/useTracks';
+import { getEndpoint } from '../src/config/getEndpoint';
+
+import { Audio, AVPlaybackStatus } from 'expo-av';
 
 export default function ModalScreen() {
-  const [play, setPlay] = useState(false);
+  const soundRef = useRef(new Audio.Sound()).current;
+  const isMounted = useRef(false);
+  const [status, setStatus] = useState<AVPlaybackStatus | null>(null);
+
+  console.log({status})
+
+  const API_ENDPOINT = getEndpoint();
+
   const currentMentalState = useMentalStatesState();
   const colorScheme = useColorScheme();
+
   const themedColor = Colors[colorScheme ?? 'light'].text;
-  const {loading, error, tracks} = useTracks();
+  const {loading, error, tracks, currentTrack, nextTrack} = useTracks();
+  //const source = loading ? null : `${API_ENDPOINT}${tracks[0]?.path}`
 
-  console.log({loading, error, tracks})
+  console.log({loading, error, currentTrack})
 
-  const iconName = play ? "play" : "pause";
+  useEffect(() => {
+    isMounted.current = true;
+    return () => (isMounted.current = false);
+  }, []);
 
-  const _togglePlay = () => {
-    setPlay(!play)
-  }
+  useEffect(() => {
+    if (currentTrack !== null) {
+      const source = `${API_ENDPOINT}${currentTrack?.path}`
+      soundRef
+        .loadAsync({uri: source})
+        .then((playbackStatus) => {
+          if (isMounted.current === true) {
+            setStatus(playbackStatus);
+          }
+        })
+        .catch((error) => {
+          console.log({ error });
+        });
+    }
+
+    soundRef.setOnPlaybackStatusUpdate((status) => {
+      if (isMounted.current === true) {
+        setStatus(status);
+      }
+    });
+
+    return () => {
+      soundRef.unloadAsync();
+    };
+  }, [currentTrack]);
+
+  const iconName = status?.isPlaying ? 'pause' : 'play';
 
   return (
     <View style={styles.container}>
@@ -33,18 +70,18 @@ export default function ModalScreen() {
       <View style={styles.playerContainer}>
         <View style={styles.skipButtonContainer} />
           <TouchableOpacity
-            activeOpacity={0.5}
-            style={[styles.playPauseButton, {borderColor: themedColor}]}
-            onPress={_togglePlay}
-          >
-            <FontAwesome
-              name={iconName}
-              size={30}
-              color={themedColor}
-            />
-          </TouchableOpacity>
+              activeOpacity={0.5}
+              style={[styles.playPauseButton, {borderColor: themedColor}]}
+              onPress={() => (status.isPlaying ? soundRef.pauseAsync() : soundRef.playAsync())}
+            >
+              <FontAwesome
+                name={iconName}
+                size={30}
+                color={themedColor}
+              />
+            </TouchableOpacity>
           <View style={styles.skipButtonContainer}>
-            <TouchableOpacity activeOpacity={0.5} hitSlop={5}>
+            <TouchableOpacity activeOpacity={0.5} hitSlop={5} onPress={nextTrack}>
               <FontAwesome
                 name="step-forward"
                 size={30}
@@ -54,7 +91,7 @@ export default function ModalScreen() {
           </View>
       </View>
       <View style={styles.trackNameContainer}>
-        <Text style={styles.trackName}>Track name</Text>
+        <Text style={styles.trackName}>{currentTrack?.title}</Text>
       </View>
     </View>
   );

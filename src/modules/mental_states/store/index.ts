@@ -19,7 +19,8 @@ export const mentalStateSlice = createSlice({
   reducers: {
     setCurrentMentalState: (state, action: PayloadAction<State>) => {
       state.mentalState = action.payload
-    }
+    },
+    resetStore: () => ({ ...initialState }),
   },
 })
 
