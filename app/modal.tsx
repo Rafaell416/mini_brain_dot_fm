@@ -1,18 +1,56 @@
-import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-import EditScreenInfo from '../src/components/EditScreenInfo';
 import { Text, View } from '../src/components/Themed';
+import Header from '../src/modules/player/ui/Header';
+import { useMentalStatesState } from '../src/modules/mental_states/hooks/useMentalStates';
+import Colors from '../src/constants/Colors';
 
 export default function ModalScreen() {
+  const [play, setPlay] = useState(false);
+  const currentMentalState = useMentalStatesState();
+  const colorScheme = useColorScheme();
+  const themedColor = Colors[colorScheme ?? 'light'].text;
+
+  const iconName = play ? "play" : "pause";
+
+  const _togglePlay = () => {
+    setPlay(!play)
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Modal</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/modal.tsx" />
-
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+      <Header title={`Music to ${currentMentalState?.mentalState?.title}`}/>
+      <View style={styles.iconContainer}>
+        <Text style={styles.icon}>{currentMentalState?.mentalState?.icon}</Text>
+      </View>
+      <View style={styles.playerContainer}>
+        <View style={styles.skipButtonContainer} />
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={[styles.playPauseButton, {borderColor: themedColor}]}
+            onPress={_togglePlay}
+          >
+            <FontAwesome
+              name={iconName}
+              size={30}
+              color={themedColor}
+            />
+          </TouchableOpacity>
+          <View style={styles.skipButtonContainer}>
+            <TouchableOpacity activeOpacity={0.5} hitSlop={5}>
+              <FontAwesome
+                name="step-forward"
+                size={30}
+                color={themedColor}
+              />
+            </TouchableOpacity>
+          </View>
+      </View>
+      <View style={styles.trackNameContainer}>
+        <Text style={styles.trackName}>Track name</Text>
+      </View>
     </View>
   );
 }
@@ -20,16 +58,40 @@ export default function ModalScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  iconContainer: {
+    width: '100%',
+    height: '60%',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
+  icon: {
+    fontSize: 200,
+  },
+  playerContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  playPauseButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    height: 80,
+    width: 80,
+    borderRadius: 40 
+  },
+  skipButtonContainer: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  trackNameContainer: {
+    width: '100%',
+    alignItems: 'center',
+    padding: 45
+  },
+  trackName: {
     fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
+    fontWeight: '600'
+  }
 });

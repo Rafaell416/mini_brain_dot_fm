@@ -4,20 +4,23 @@ import { Text, View } from '../../src/components/Themed';
 import useMentalStates from '../../src/modules/mental_states/hooks/useMentalStates';
 import { State } from '../../src/modules/mental_states/types';
 import { useRouter } from "expo-router";
+import { useMentalStatesActions } from '../../src/modules/mental_states/hooks/useMentalStates';
+//import { useMentalStatesState } from '../../src/modules/mental_states/hooks/useMentalStates';
 
-
-const Card: React.FC<{ title: string, icon: string }> = ({ title, icon }) => {
+const Card: React.FC<{ state: State }> = ({ state }) => {
+  const { setCurrentMentalState } = useMentalStatesActions();
   const router = useRouter();
   
   const _handlePressCard = () => {
     router.push('/modal');
+    setCurrentMentalState(state)
   }
 
   return (
     <TouchableOpacity activeOpacity={0.5} onPress={_handlePressCard}>
       <View style={styles.card}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.icon}>{icon}</Text>
+        <Text style={styles.title}>{state.title}</Text>
+        <Text style={styles.icon}>{state.icon}</Text>
       </View>
     </TouchableOpacity>
   )
@@ -25,9 +28,13 @@ const Card: React.FC<{ title: string, icon: string }> = ({ title, icon }) => {
 
 export default function MentalStates() {
   const states = useMentalStates()
+  // const currentState = useMentalStatesState();
+
+  // console.log({currentState})
+  
 
   const renderItem: React.FC<{ item: State }> = ({ item }) => (
-    <Card title={item.title} icon={item.icon}/>
+    <Card state={item}/>
   );
 
   return (
