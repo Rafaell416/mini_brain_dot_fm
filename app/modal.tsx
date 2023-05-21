@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -7,11 +7,16 @@ import Header from '../src/modules/player/ui/Header';
 import { useMentalStatesState } from '../src/modules/mental_states/hooks/useMentalStates';
 import Colors from '../src/constants/Colors';
 
+import useTracks from '../src/modules/player/hooks/useTracks';
+
 export default function ModalScreen() {
   const [play, setPlay] = useState(false);
   const currentMentalState = useMentalStatesState();
   const colorScheme = useColorScheme();
   const themedColor = Colors[colorScheme ?? 'light'].text;
+  const {loading, error, tracks} = useTracks();
+
+  console.log({loading, error, tracks})
 
   const iconName = play ? "play" : "pause";
 

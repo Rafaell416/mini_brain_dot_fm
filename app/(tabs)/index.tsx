@@ -5,7 +5,6 @@ import useMentalStates from '../../src/modules/mental_states/hooks/useMentalStat
 import { State } from '../../src/modules/mental_states/types';
 import { useRouter } from "expo-router";
 import { useMentalStatesActions } from '../../src/modules/mental_states/hooks/useMentalStates';
-//import { useMentalStatesState } from '../../src/modules/mental_states/hooks/useMentalStates';
 
 const Card: React.FC<{ state: State }> = ({ state }) => {
   const { setCurrentMentalState } = useMentalStatesActions();
@@ -27,11 +26,7 @@ const Card: React.FC<{ state: State }> = ({ state }) => {
 }
 
 export default function MentalStates() {
-  const states = useMentalStates()
-  // const currentState = useMentalStatesState();
-
-  // console.log({currentState})
-  
+  const states = useMentalStates()  
 
   const renderItem: React.FC<{ item: State }> = ({ item }) => (
     <Card state={item}/>
