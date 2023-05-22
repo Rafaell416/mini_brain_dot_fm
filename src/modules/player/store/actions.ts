@@ -1,5 +1,5 @@
-import { AppDispatch } from "../../../store";
-import { tracksSlice } from ".";
+import { AppDispatch } from '../../../store';
+import { tracksSlice } from '.';
 
 export const tracksActions = (dispatch: AppDispatch) => {
   const actions = {

@@ -32,11 +32,11 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
       >
         {title}
       </Text>
-      <Link href="/" asChild>
+      <Link href='/' asChild>
         <Pressable hitSlop={5} onPress={clear}>
           {({ pressed }) => (
             <FontAwesome
-              name="chevron-down"
+              name='chevron-down'
               size={25}
               color={Colors[colorScheme ?? 'light'].text}
               style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}

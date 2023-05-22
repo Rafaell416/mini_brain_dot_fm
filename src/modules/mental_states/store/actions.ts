@@ -1,6 +1,6 @@
-import { AppDispatch } from "../../../store";
-import { mentalStateSlice } from ".";
-import { State } from "../types";
+import { AppDispatch } from '../../../store';
+import { mentalStateSlice } from '.';
+import { State } from '../types';
 
 export const mentalStateActions = (dispatch: AppDispatch) => {
   const actions = {

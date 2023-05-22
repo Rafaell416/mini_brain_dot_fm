@@ -1,6 +1,6 @@
 import http from '../../../config/http';
 import { AxiosResponse } from 'axios';
-import { Track } from "../types";
+import { Track } from '../types';
 
 
 type TracksServiceType = {

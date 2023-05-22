@@ -7,6 +7,7 @@ import { useMentalStatesState } from '../src/modules/mental_states/hooks/useMent
 import Colors from '../src/constants/Colors';
 import useTracks from '../src/modules/player/hooks/useTracks';
 import { getEndpoint } from '../src/config/getEndpoint';
+import { haptics } from '../src/config/haptics';
 
 import { Audio, AVPlaybackStatus } from 'expo-av';
 
@@ -15,8 +16,6 @@ export default function ModalScreen() {
   const isMounted = useRef(false);
   const [status, setStatus] = useState<AVPlaybackStatus | null>(null);
 
-  console.log({status})
-
   const API_ENDPOINT = getEndpoint();
 
   const currentMentalState = useMentalStatesState();
@@ -24,9 +23,6 @@ export default function ModalScreen() {
 
   const themedColor = Colors[colorScheme ?? 'light'].text;
   const {loading, error, tracks, currentTrack, nextTrack} = useTracks();
-  //const source = loading ? null : `${API_ENDPOINT}${tracks[0]?.path}`
-
-  console.log({loading, error, currentTrack})
 
   useEffect(() => {
     isMounted.current = true;
@@ -61,6 +57,15 @@ export default function ModalScreen() {
 
   const iconName = status?.isPlaying ? 'pause' : 'play';
 
+  const _togglePlay = () => {
+    haptics.medium();
+    if (status.isPlaying) {
+      soundRef.pauseAsync();
+    } else {
+      soundRef.playAsync()
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Header title={`Music to ${currentMentalState?.mentalState?.title}`}/>
@@ -72,7 +77,7 @@ export default function ModalScreen() {
           <TouchableOpacity
               activeOpacity={0.5}
               style={[styles.playPauseButton, {borderColor: themedColor}]}
-              onPress={() => (status.isPlaying ? soundRef.pauseAsync() : soundRef.playAsync())}
+              onPress={_togglePlay}
             >
               <FontAwesome
                 name={iconName}
@@ -81,7 +86,10 @@ export default function ModalScreen() {
               />
             </TouchableOpacity>
           <View style={styles.skipButtonContainer}>
-            <TouchableOpacity activeOpacity={0.5} hitSlop={5} onPress={nextTrack}>
+            <TouchableOpacity style={styles.nextButton} activeOpacity={0.5} hitSlop={5} onPress={() => {
+              nextTrack();
+              haptics.selection();
+            }}>
               <FontAwesome
                 name="step-forward"
                 size={30}
@@ -135,5 +143,8 @@ const styles = StyleSheet.create({
   trackName: {
     fontSize: 20,
     fontWeight: '600'
+  },
+  nextButton: {
+    padding: 20,
   }
 });

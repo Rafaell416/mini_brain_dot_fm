@@ -1,4 +1,4 @@
-import { getReleaseChannel } from "./getReleaseChannel";
+import { getReleaseChannel } from './getReleaseChannel';
 
 const API_ENDPONIT_DEFAULT = 'http://localhost:3000'; //process.env.API_ENDPOINT
 

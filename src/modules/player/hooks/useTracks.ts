@@ -1,10 +1,10 @@
-import { useEffect, useCallback, useMemo } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { fetchTracks } from "../store";
-import { Track } from "../types";
-import { tracksSelector } from "../store/selector";
-import { useMentalStatesState } from "../../mental_states/hooks/useMentalStates";
-import { tracksActions } from "../store/actions";
+import { useEffect, useCallback, useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { fetchTracks } from '../store';
+import { Track } from '../types';
+import { tracksSelector } from '../store/selector';
+import { useMentalStatesState } from '../../mental_states/hooks/useMentalStates';
+import { tracksActions } from '../store/actions';
 
 interface useTracksPayload {
   loading: boolean;
@@ -27,7 +27,7 @@ function useTracks(): useTracksPayload {
   const {getRandomTrack} = useTracksActions();
   const dispatch = useAppDispatch();
   const { status, error, tracks, currentTrack } = useTracksState();
-  const loading = status === "idle" || status === "loading";
+  const loading = status === 'idle' || status === 'loading';
 
   const currentMentalState = useMentalStatesState();
 

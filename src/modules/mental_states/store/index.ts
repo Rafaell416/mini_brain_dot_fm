@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 import { State } from '../types';
 
@@ -27,4 +27,4 @@ export const mentalStateSlice = createSlice({
 const { reducer, actions: actionsMentalStateSlice } = mentalStateSlice
 export const { setCurrentMentalState } = actionsMentalStateSlice;
 
-export default reducer
+export default reducer;

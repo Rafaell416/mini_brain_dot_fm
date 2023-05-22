@@ -1,5 +1,5 @@
 import type { RootState } from '../../../store';
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect';
 
 export const tracksSelector = createSelector(
   (state: RootState) => state.tracks,
